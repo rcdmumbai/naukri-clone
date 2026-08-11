@@ -9,8 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        "naukri-blue": "#2557a7",
+        "naukri-orange": "#ff7555",
+        "naukri-ink": "#3d3d3d",
+        "naukri-muted": "#6b6b6b",
       },
     },
   },
