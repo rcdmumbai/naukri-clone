@@ -36,11 +36,13 @@ export default async function EmployerDashboardPage() {
     );
   }
 
-  const jobs = await prisma.job.findMany({
-    where: { companyId: user.companyId ?? undefined },
-    include: { _count: { select: { applications: true } } },
-    orderBy: { postedAt: "desc" },
-  });
+  const jobs = user.companyId
+    ? await prisma.job.findMany({
+        where: { companyId: user.companyId },
+        include: { _count: { select: { applications: true } } },
+        orderBy: { postedAt: "desc" },
+      })
+    : [];
 
   const totalApplications = jobs.reduce((total, job) => total + job._count.applications, 0);
   const activeJobs = jobs.filter((job) => job.isActive).length;
