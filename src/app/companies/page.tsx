@@ -14,7 +14,7 @@ type Props = {
 export default async function CompaniesPage({ searchParams }: Props) {
   const companies = await prisma.company.findMany({
     where: searchParams.industry ? { industry: searchParams.industry } : undefined,
-    include: { _count: { select: { jobs: true } } },
+    include: { _count: { select: { jobs: { where: { isActive: true } } } } },
     orderBy: { name: "asc" },
   });
 
