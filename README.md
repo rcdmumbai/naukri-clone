@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Naukri Clone
 
-## Getting Started
+A full-stack replica of [naukri.com](https://www.naukri.com) — job search, applications and employer
+hiring — built with Next.js 14 (App Router), TypeScript, Tailwind CSS and Prisma/SQLite.
 
-First, run the development server:
+> Educational project. Not affiliated with Naukri.com or Info Edge (India) Ltd.
+
+## Features
+
+**Jobseekers**
+- Register / login (JWT session in an httpOnly cookie)
+- Homepage with hero search, popular categories, top companies and latest jobs
+- Job search with keyword, location and experience search plus filters for work mode, department,
+  salary band, employment type, company and freshness; sorting and pagination
+- Job detail page with company info and similar jobs
+- Apply with an optional message, save/unsave jobs
+- Profile editor, application tracker and saved job list
+
+**Employers**
+- Register as an employer (company is created automatically)
+- Dashboard with job/application counts
+- Post jobs, open/close them, view applicants and move them through
+  Applied → Shortlisted → Rejected → Hired
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env      # DATABASE_URL + JWT_SECRET
+npx prisma migrate deploy
+npm run db:seed
+npm run dev               # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Demo accounts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Role      | Email                   | Password     |
+| --------- | ----------------------- | ------------ |
+| Jobseeker | jobseeker@example.com   | Password@123 |
+| Employer  | employer@example.com    | Password@123 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Script              | Purpose                            |
+| ------------------- | ---------------------------------- |
+| `npm run dev`       | Start the dev server               |
+| `npm run build`     | Production build                   |
+| `npm run lint`      | ESLint                             |
+| `npm run typecheck` | TypeScript, no emit                |
+| `npm run db:seed`   | Reseed companies, jobs and users   |
+| `npm run db:reset`  | Drop, re-migrate and reseed the DB |
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+prisma/          schema, migrations, seed data
+src/app/         routes (pages + /api route handlers)
+src/components/  shared UI (header, job card, filters, forms)
+src/lib/         prisma client, auth/session, search query builder, formatting
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Data model
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`User` (jobseeker or employer) · `Company` · `Job` · `Application` · `SavedJob`. Jobs store locations
+and skills as comma separated strings so SQLite can be used without extra join tables; swap the
+Prisma datasource to PostgreSQL and switch these to arrays for a production deployment.

@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  name         String
+  role         String // JOBSEEKER | EMPLOYER
+  phone        String?
+  location     String?
+  headline     String?
+  experience   Float? // years
+  currentSalary Float? // in lakhs per annum
+  skills       String? // comma separated
+  resumeText   String?
+  companyId    String?
+  company      Company?      @relation(fields: [companyId], references: [id])
+  jobs         Job[]         @relation("PostedJobs")
+  applications Application[]
+  savedJobs    SavedJob[]
+  createdAt    DateTime      @default(now())
+}
+
+model Company {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  description String
+  industry    String
+  logoText    String
+  logoColor   String
+  rating      Float   @default(4)
+  reviews     Int     @default(0)
+  website     String?
+  size        String?
+  users       User[]
+  jobs        Job[]
+}
+
+model Job {
+  id           String        @id @default(cuid())
+  title        String
+  description  String
+  role         String
+  department   String
+  locations    String // comma separated
+  skills       String // comma separated
+  minExperience Float
+  maxExperience Float
+  minSalary    Float // lakhs per annum
+  maxSalary    Float
+  workMode     String // WORK_FROM_OFFICE | HYBRID | REMOTE
+  employmentType String // FULL_TIME | PART_TIME | INTERNSHIP | CONTRACT
+  openings     Int           @default(1)
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id])
+  postedById   String?
+  postedBy     User?         @relation("PostedJobs", fields: [postedById], references: [id])
+  isActive     Boolean       @default(true)
+  postedAt     DateTime      @default(now())
+  applications Application[]
+  savedBy      SavedJob[]
+}
+
+model Application {
+  id          String   @id @default(cuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String   @default("APPLIED") // APPLIED | SHORTLISTED | REJECTED | HIRED
+  coverLetter String?
+  appliedAt   DateTime @default(now())
+
+  @@unique([jobId, userId])
+}
+
+model SavedJob {
+  id      String   @id @default(cuid())
+  jobId   String
+  job     Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  savedAt DateTime @default(now())
+
+  @@unique([jobId, userId])
+}

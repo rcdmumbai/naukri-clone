@@ -3,25 +3,42 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --naukri-blue: #2557a7;
+  --naukri-orange: #ff7555;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #3d3d3d;
+  background: #ffffff;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-[1100px] px-4;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-naukri-orange px-5 py-2 text-sm font-medium text-white transition hover:bg-[#f3603c] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-full border border-naukri-blue px-5 py-2 text-sm font-medium text-naukri-blue transition hover:bg-blue-50;
+  }
+
+  .card {
+    @apply rounded-xl border border-gray-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)];
+  }
+
+  .input-field {
+    @apply w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-naukri-blue focus:ring-1 focus:ring-naukri-blue;
+  }
+
+  .label-field {
+    @apply mb-1 block text-sm font-medium text-gray-700;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600;
   }
 }
